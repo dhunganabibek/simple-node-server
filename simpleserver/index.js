@@ -8,13 +8,13 @@ const currentDir = import.meta.dirname;
 const server = createServer();
 server.on("request", async (req, res) => {
     // text response
-    if (req.url === "/") {
+    if (req.method == "GET" && req.url === "/") {
         res.statusCode = 200;
         res.setHeader("Content-Type", "text/plain");
         res.end("Hello World");
     }
     // json response
-    if (req.url === "/about") {
+    if (req.method == "GET" && req.url === "/about") {
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify({
@@ -24,18 +24,27 @@ server.on("request", async (req, res) => {
         }));
     }
     // image response
-    if (req.url === "/image") {
+    if (req.method == "GET" && req.url === "/image") {
         res.statusCode = 200;
         res.setHeader("Content-Type", "image/jpeg");
         const data = await readFile(join(currentDir, "../assets/earth.jpg"));
         res.end(data);
     }
     // html response
-    if (req.url === "/html") {
+    if (req.method == "GET" && req.url === "/html") {
         res.statusCode = 200;
         res.setHeader("Content-Type", "text/html");
         const data = await readFile(join(currentDir, "../assets/index.html"));
         res.end(data);
+    }
+    // post request
+    if (req.method == "POST" && req.url === "/post") {
+        const body = req.on("data", (chunk) => {
+            console.log(chunk.toString());
+        });
+        console.log(body);
+        console.log("POST request received");
+        res.end("POST request received");
     }
 });
 // server listening on port 8080
