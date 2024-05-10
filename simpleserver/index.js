@@ -1,12 +1,37 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const node_http_1 = require("node:http");
+import { createServer } from "node:http";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+const hostname = "localhost";
+const port = 8080;
+const currentDir = import.meta.dirname;
 // creating a basic server
-const server = (0, node_http_1.createServer)();
-server.on("request", (req, res) => {
-    console.log("Request received");
+const server = createServer();
+server.on("request", async (req, res) => {
+    // text response
+    if (req.url === "/") {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "text/plain");
+        res.end("Hello World");
+    }
+    // json response
+    if (req.url === "/about") {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify({
+            name: "Bibek Dhungana",
+            age: 26,
+            location: "Bloomington, IL",
+        }));
+    }
+    // image response
+    if (req.url === "/image") {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "image/jpeg");
+        const data = await readFile(join(currentDir, "./earth.jpg"));
+        res.end(data);
+    }
 });
 // server listening on port 8080
 server.listen(8080, () => {
-    console.log("Server is running on http://localhost:8080");
+    console.log(`Server is running on http://${hostname}:${port}`);
 });
