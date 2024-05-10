@@ -27,7 +27,14 @@ server.on("request", async (req, res) => {
     if (req.url === "/image") {
         res.statusCode = 200;
         res.setHeader("Content-Type", "image/jpeg");
-        const data = await readFile(join(currentDir, "./earth.jpg"));
+        const data = await readFile(join(currentDir, "../assets/earth.jpg"));
+        res.end(data);
+    }
+    // html response
+    if (req.url === "/html") {
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "text/html");
+        const data = await readFile(join(currentDir, "../assets/index.html"));
         res.end(data);
     }
 });
